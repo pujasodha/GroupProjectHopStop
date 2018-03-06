@@ -1,0 +1,28 @@
+html{
+    height: 100%;
+    width: 100%;
+}
+body{
+    background-image: url(../images/backgroundbeer.jpg);
+    background-repeat: no-repeat;
+    height: 100%; 
+    width: 100%;   
+    background-size: cover;
+}
+#enterButton {
+    background: #D69256; 
+    color: #701400;
+    border-color: #701400;
+    
+}
+#formEntries{
+    margin-top: 250px;
+}
+#navBar{
+    opacity: 0.8;
+}
+/* .formDesign{
+    border: #bc5039 2px solid;
+    padding: 5px;
+    background: #D69256;
+} */
