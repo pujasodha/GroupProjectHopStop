@@ -41,12 +41,11 @@
         </div>
 
     </nav>
-    <div class="uk-child-width-1-1@l uk-light" uk-grid>
+
+    <div class="uk-child-width-1-1@l uk-light" id="bgImg" uk-grid>
         <div>
-            <div class="uk-background-fixed uk-background-muted  uk-panel uk-flex uk-flex-center uk-flex-middle" style="background-image: url(./assets/images/backgroundbeer.jpg); opacity: 1.0; background-repeat: no-repeat; height: 100%;  width: 100%; padding-top: 500px; padding-bottom: 500px;">
-
-
-                <form>
+            <div class="uk-background-cover uk-panel uk-flex uk-flex-center uk-flex-middle">
+                <form id="formEntries">
                     <div class="uk-margin">
                         <div class="uk-margin">
                             <div class="uk-inline">
@@ -54,14 +53,32 @@
                             </div>
                             <div class="uk-margin">
                                 <div class="uk-inline">
-                                    <input class="uk-input" id="birth" type="text" placeholder="Birth Year" style="background: #701400">
+                                    <input class="uk-input" id="birth" type="text" placeholder="Password" style="background: #701400">
                                 </div>
                             </div>
-                            <input class="submit" type="submit" placeholder="Submit" style="background: #D69256; color: #701400; height: 30px">
+                            <a class="uk-button uk-button-default" href="#modal-sections" id="enterButton" uk-toggle>Enter</a>
+            
+            <div id="modal-sections" uk-modal>
+                <div class="uk-modal-dialog">
+                    <button class="uk-modal-close-default" type="button" uk-close></button>
+                    <div class="uk-modal-header">
+                        <h2 class="uk-modal-title">Welcome</h2>
+                    </div>
+                    <div class="uk-modal-body">
+                        <p>By agreeing, you are confirming you are over the age of 21. </p>
+                    </div>
+                    <div class="uk-modal-footer uk-text-right">
+                        <button class="uk-button uk-button-default uk-modal-close" type="button">Cancel</button>
+                        <button class="uk-button uk-button-primary" type="button">Agree</button>
+                    </div>
+                </div>
+            </div>
+
                 </form>
                 </div>
                 </div>
             </div>
+
             <script src="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.0.0-beta.40/js/uikit.min.js"></script>
             <script src="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.0.0-beta.40/js/uikit-icons.min.js"></script>
             <script src="https://code.jquery.com/jquery-3.3.1.js" integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60=" crossorigin="anonymous"></script>
