@@ -1,85 +1,209 @@
+// Global Variables
+var idArray = []
+var latLngArray = []
+var locNameArray = []
+var breweryIdArray = []
+var alphabet = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
+var labelIndex = 0
 
-$(document).ready(function () {
+// On Submit Button Click
+$('#submitBtn').on('click', function () {
 
+    var userCity = $('#formUserCity').val()
+    var userState = $('#formUserState').val()
 
-    var idArray = []
-
-    // Beermap aJax request
+    // ajax request for user input data
     $.ajax({
-        url: "http://crossorigin.me/http://beermapping.com/webservice/loccity/121057043ca94017756eba03de32992c&s=json/irvine,ca",
+        url: "https://crossorigin.me/http://api.brewerydb.com/v2/locations?key=0cb4a8ec09ac574eca1569f7b038857d&locality=" + userCity + "&region=" + userState + "",
         method: "GET"
     }).then(function (response) {
 
 
-        for (i = 0; i < response.length; i++) {
-            var locRespId = response[i].id
-            idArray.push(locRespId)
-        }
-        console.log(idArray)
+        $('html, body').animate({
+            scrollTop: ($('#map').offset().top)
+        }, 50)
 
+console.log(response.data[0])
+        // Loop through api data and send relevant information to global variables
+        for (i = 0; i < response.data.length; i++) {
+            var lat = response.data[i].latitude
+            var lng = response.data[i].longitude
+            var latLngObj = { lat: lat, lng: lng }
+            var locName = response.data[i].brewery.name
+
+            var breweryId = response.data[i].brewery.id
+
+            // Push variables to global variable
+            locNameArray.push(locName)
+            latLngArray.push(latLngObj)
+            breweryIdArray.push(breweryId)
+
+            //Location endpoint variables
+            var breweryName = (response.data[i].brewery.name)
+            var description = (response.data[i].brewery.description)
+            var website = (response.data[i].brewery.website)
+            var stAddress = (response.data[i].streetAddress)
+            var state = (response.data[i].region)
+            var zip = (response.data[i].postal)
+            var phone = (response.data[i].phone)
+            var brewIcon
+            var brewImages = response.data[i].brewery.images
+
+            //if then to handle blank icons
+            if (typeof brewImages != 'undefined') {
+                var brewIcon = response.data[i].brewery.images.icon
+                console.log("found undefined")
+            }
+            else {
+                var brewIcon = "brewPlaceholder.png"
+
+            }
+
+            // var pic = (response.data[i].brewery.images.icon)
+
+            // console.log('image link =' + pic)
+
+            //Append search results to the page - dynamic jquery using string interpolation
+            $('#breweryCard').append(`
+                        <div class="uk-card uk-card-default uk-width-1-2@m">
+                            <div class="uk-card-header">
+                                <div class="uk-grid-small uk-flex-middle" uk-grid>
+                                    <div class="uk-width-auto">
+                                        <img class="uk-border-circle" width="40" height="40" src="${brewIcon}">
+                                    </div>
+                                    <div class="uk-width-expand">
+                                        <h3 id="card-${breweryId}" class="uk-card-title uk-margin-remove-bottom">${alphabet[i]}. ${breweryName}</h3>
+                                    </div>
+                                </div>
+                            </div>
+                        <div class="uk-card-body">
+                            <h6>Description<h6>
+                                <p>${description}</p>
+                        </div>
+                        <div class="uk-card-footer">
+                            <a href=${website} target="_blank" class="uk-button uk-button-text">Website</a>
+                        </div>
+                        </div>
+                        </div>
+                        <br>
+                        <br>
+                        `)
+        }
+
+        
+
+        // Calculation for center of lat/long
+        // for (m = 0; m < beerMap.length; m++) {
+        //     var latLngHolder = 0
+        //     var latLngHolder = latLngHolder + beerMap[m]
+        //     console.log(latLngHolder)
+        // }
+
+        // Initialize map with latLngArray data
+        initMap(latLngArray)
+
+    }).catch(function (err) {
+        console.log(err)
     })
 
-    
-    for (i = 0; i < idArray.length; i++) {
-
-        var locId = idArray[i]
-        console.log("test")
-        $.ajax({
-            url: "http://crossorigin.me/http://beermapping.com/webservice/locmap/121057043ca94017756eba03de32992c&s=json/4",
-            method: "GET"
-        }).then(function (response) {
 
 
-            console.log(response)
+// Create Map Function
+function initMap(beerMap) {
 
+    console.log(breweryIdArray)
+
+    var map = new google.maps.Map(document.getElementById('map'), {
+        zoom: 10,
+        center: beerMap[0]
+    })
+
+    for (i = 0; i < beerMap.length; i++) {
+        var position = beerMap[i]
+        var breweryId = breweryIdArray[i]
+        //console.log('breweryIdArray', breweryIdArray);
+        //console.log('breweryIdArray[' + i + ']', breweryIdArray[i]);
+        // var locationInfowindow = new google.maps.InfoWindow({
+        //     content: 'Test content',
+        //   })
+        var marker = new google.maps.Marker({
+            animation: google.maps.Animation.DROP,
+            position: position,
+            map: map,
+            title: locNameArray[i],
+            label: alphabet[i],
+            id: "marker" + i,
+            class: "marker",
+            breweryId: breweryIdArray[i], // doesn't do anything
+        })
+
+        console.log('marker', marker);
+
+        // On Marker Click Event
+        google.maps.event.addListener(marker, 'click', function(e) {
+            console.log('e', e);
+            //console.log(JSON.stringify(e.target));
+            // map.setZoom(18);
+            // map.setCenter(marker.getPosition())
+            // var markerPosition = marker.getPosition()
+            console.log('lat', e.latLng.lat());
+            console.log('lng', e.latLng.lng());
+            console.log('latLngArray', latLngArray);
+
+            var lat = e.latLng.lat();
+            var lng = e.latLng.lng();
+
+            var breweryIndex;
+
+            // Reverse lookup comparing each element in latLngArray to lat lng values of the map marker the user clicked
+            for (var i = 0; i < latLngArray.length; i++) {
+                var arrLat = latLngArray[i].lat;
+                var arrLng = latLngArray[i].lng;
+                //Math.round is rounding to the 3rd decimal place
+                if (Math.round(arrLat * 1000) / 1000 === Math.round(lat * 1000) / 1000
+                    && Math.round(arrLng * 1000) / 1000 === Math.round(lng * 1000) / 1000) {
+                    console.log('matched on index', i);
+                    breweryIndex = i;//assign brewery index a value of index i
+                    break;
+                }
+            }
+            
+            //onsole.log('marker', marker)
+            //console.log('breweryId', marker.breweryId)
+            var scrollBreweryId = breweryIdArray[breweryIndex];
+
+            var scroll = $("#card-"+scrollBreweryId).offset().top;
+            //console.log('scroll', scroll);
+
+            $('html, body').animate({
+                scrollTop: scroll
+            }, 300)
         })
     }
 
-})
-// END OF DOCUMENT READY
-
-// Placeholder Location Array
-var locations = [
-    { lat: -31.563910, lng: 147.154312 },
-    { lat: -33.718234, lng: 150.363181 },
-    { lat: -33.727111, lng: 150.371124 },
-    { lat: -33.848588, lng: 151.209834 },
-    { lat: -33.851702, lng: 151.216968 },
-    { lat: -34.671264, lng: 150.863657 },
-    { lat: -35.304724, lng: 148.662905 },
-    { lat: -36.817685, lng: 175.699196 },
-    { lat: -36.828611, lng: 175.790222 },
-    { lat: -37.750000, lng: 145.116667 },
-    { lat: -37.759859, lng: 145.128708 },
-    { lat: -37.765015, lng: 145.133858 },
-    { lat: -37.770104, lng: 145.143299 },
-    { lat: -37.773700, lng: 145.145187 },
-    { lat: -37.774785, lng: 145.137978 },
-    { lat: -37.819616, lng: 144.968119 },
-    { lat: -38.330766, lng: 144.695692 },
-    { lat: -39.927193, lng: 175.053218 },
-    { lat: -41.330162, lng: 174.865694 },
-    { lat: -42.734358, lng: 147.439506 },
-    { lat: -42.734358, lng: 147.501315 },
-    { lat: -42.735258, lng: 147.438000 },
-    { lat: -43.999792, lng: 170.463352 }
-]
-
-var apiKey = "AIzaSyDIfqzijKvhMUtMvwGLgZNbIooIGHgHjdE"
-
-function initMap() {
-    var center = { lat: -31.563910, lng: 147.154312 };
-    var map = new google.maps.Map(document.getElementById('map'), {
-        zoom: 5,
-        center: center
-    });
-    for (i = 0; i < locations.length; i++) {
-        var position = locations[i]
-        var marker = new google.maps.Marker({
-            position: position,
-            map: map
-        });
-
-    }
-
 }
+
+})
+
+
+
+// populate container with test divs
+// for (i = 0; i < 20; i++) {
+//     $('.container').append('<div class="row" id="row' + i + '">').append('<div class="col-md-12"').append('<p id="p' + i + '">THIS IS TEST MATERIAL # ' + i + '</p>')
+// }
+
+// // on test btn click
+// $('#testBtn').on('click', function () {
+// // // scroll to third row
+// $('html, body').animate({
+//     scrollTop: ($('#row2').offset().top)
+// },500);
+// })
+
+
+
+$("#testBtn").on('click', function () {
+    $('html, body').animate({
+        scrollTop: ($('#row3').offset().top)
+    }, 300)
+})

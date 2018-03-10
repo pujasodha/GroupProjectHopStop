@@ -2,7 +2,6 @@ html{
     height: 100%;
     width: 100%;
 }
-
 #enterButton {
     background: #D69256; 
     color: #701400;
@@ -15,8 +14,6 @@ html{
 #navBar{
     opacity: 0.8;
 }
-
-
 .uk-cover-container {
     width: 100%;
     height: auto;
@@ -26,17 +23,14 @@ html{
     padding-bottom: 50px;
     background-image: url(../images/wood.jpg)
 }
-
-.uk-button {
+.uk-button{
     width: 400px;
     height: 50px;
 }
-
 #map {
-    height: 500px;
+    height: 300px;
     padding-top: 50px;
+    width:75%;
 }
-
 #breweryCard {
-
 }
