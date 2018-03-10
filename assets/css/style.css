@@ -2,13 +2,7 @@ html{
     height: 100%;
     width: 100%;
 }
-body{
-    background-image: url(../images/backgroundbeer.jpg);
-    background-repeat: no-repeat;
-    height: 100%; 
-    width: 100%;   
-    background-size: cover;
-}
+
 #enterButton {
     background: #D69256; 
     color: #701400;
@@ -21,8 +15,28 @@ body{
 #navBar{
     opacity: 0.8;
 }
-/* .formDesign{
-    border: #bc5039 2px solid;
-    padding: 5px;
-    background: #D69256;
-} */
+
+
+.uk-cover-container {
+    width: 100%;
+    height: auto;
+    /* background-size: cover; */
+    opacity: .9;
+    padding-top: 50px;
+    padding-bottom: 50px;
+    background-image: url(../images/wood.jpg)
+}
+
+.uk-button {
+    width: 400px;
+    height: 50px;
+}
+
+#map {
+    height: 500px;
+    padding-top: 50px;
+}
+
+#breweryCard {
+
+}
